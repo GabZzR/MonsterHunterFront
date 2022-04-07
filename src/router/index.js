@@ -27,6 +27,12 @@ const routes = [{
         component: () =>
             import ('../views/AdminView.vue')
     },
+    {
+        path: '/form',
+        name: 'form',
+        component: () =>
+            import ('../views/MonsterFormView.vue')
+    },
 ]
 
 const router = new VueRouter({

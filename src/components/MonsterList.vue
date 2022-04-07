@@ -1,6 +1,6 @@
 <template>
 <div>
-<div class="new" v-if="displayAdmin == true">Créer un nouveau monstre ➕</div>
+<div class="new" v-if="displayAdmin == true" @click="goToForm()">Créer un nouveau monstre ➕</div>
   <div class="list">
       
     <table class="styled-table">
@@ -10,20 +10,22 @@
           <th>Name</th>
           <th>Nickname</th>
           <th>Species</th>
-          <th>Element</th>
-          <th>Weakness</th>
+          <th colspan="2">Element</th> 
+          <th colspan="2">Weakness</th> 
           <th v-if="displayAdmin == true">Admin</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="monster in movies" :key="monster.id" @click="goToMonster(monster.id)">
-          <th><img :src="'../assets/icone/' + monster.name.toLowerCase() + '.png'" alt='affiche' /></th>
+          <th><img :src="require(`../assets/icone/${monster.name.toLowerCase()}.png`)"></th>
           <th>{{monster.name}}</th>
           <th>{{monster.nickname}}</th>
           <th>{{monster.specie}}</th>
-          <th><img :src="'../assets/element/' + monster.name.toLowerCase() + '.png'" alt='.' /> {{monster.element}}</th>
-          <th><img :src="'../assets/element/' + monster.name.toLowerCase() + '.png'" alt='.' /> {{monster.weakagainst}}</th>
-          <th v-if="displayAdmin == true"><span @click.stop="deleteMonster(monsterId)">🚮</span> | <span>🖋</span></th>
+          <th><img :src="require(`../assets/element/${monster.element.toLowerCase()}.png`)" v-if="monster.element != null"> </th>
+          <th >{{monster.element}}</th>
+          <th><img :src="require(`../assets/element/${monster.weakagainst.toLowerCase()}.png`)"> </th>
+          <th colspan="2">{{monster.weakagainst}}</th>
+          <th v-if="displayAdmin == true"><span @click.stop="deleteMonster(monsterId)">🚮</span> | <span @click.stop="goToForm()">🖋</span></th>
         </tr>
       </tbody>
     </table>
@@ -49,9 +51,12 @@ export default {
     goToMonster(monsterId){
         this.$router.push({name: 'detail' , params: {monsterId}})
     },
+    goToForm(){
+        this.$router.push({name: 'form'})
+    },
     async deleteMonster(monsterId){
 
-       const del = await axios.delete("http://localhost:15000/monster/delete",{id:monsterId})
+       const del = await axios.post("http://localhost:15000/monster/delete",{id:monsterId})
        console.log(del);
     }
   },
@@ -65,7 +70,13 @@ export default {
 </script>
 
 <style scoped>
+img{
+  width: 50px;
+}
 tbody tr{
+  cursor: pointer;
+}
+.new{
   cursor: pointer;
 }
 .list {
